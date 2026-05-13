@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="消防設備士">
+<title>消防設備士 勉強アプリ iPad安定版</title>
+<style>
+:root{--red:#c1121f;--dark:#151515;--bg:#f6f7f9;--card:#fff;--line:#e5e7eb;--muted:#667085;--ok:#dcfce7;--ng:#dbeafe;--warn:#fff7ed}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;padding:0;background:var(--bg);color:#111;font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic',Meiryo,sans-serif}button,select,textarea{font:inherit}header{background:linear-gradient(135deg,#b91c1c,var(--red));color:#fff;padding:18px 16px;padding-top:calc(18px + env(safe-area-inset-top));text-align:center}h1{margin:0;font-size:22px}header p{margin:6px 0 0;font-size:13px;opacity:.9}main{width:min(920px,100%);margin:0 auto;padding:14px;padding-bottom:calc(24px + env(safe-area-inset-bottom))}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 6px 18px rgba(16,24,40,.06)}.row{display:flex;gap:8px;flex-wrap:wrap}.btn{appearance:none;border:0;border-radius:13px;padding:14px 16px;min-height:48px;background:var(--dark);color:#fff;font-weight:800;font-size:16px;cursor:pointer;touch-action:manipulation}.btn:active{transform:scale(.985)}.sub{background:#eef2f7;color:#111}.red{background:var(--red)}select,textarea{width:100%;border:1px solid var(--line);border-radius:13px;background:#fff;padding:13px;font-size:16px}.small{font-size:13px;color:var(--muted);line-height:1.55}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stat{background:#fafafa;border:1px solid var(--line);border-radius:13px;padding:12px}.stat b{font-size:22px}.q{font-size:20px;font-weight:900;line-height:1.65;margin:12px 0}.pill{display:inline-block;background:#fee2e2;color:#991b1b;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:900}.choice{appearance:none;display:block;width:100%;text-align:left;border:1.5px solid var(--line);border-radius:14px;background:white;padding:15px;margin:9px 0;font-size:17px;line-height:1.45;min-height:54px;cursor:pointer;touch-action:manipulation}.choice.ok{background:var(--ok);border-color:#16a34a}.choice.ng{background:var(--ng);border-color:#2563eb}.ex{display:none;background:var(--warn);border:1px solid #fed7aa;border-radius:14px;padding:13px;margin-top:10px;line-height:1.7}.topline{display:flex;align-items:center;justify-content:space-between;gap:8px}.hidden{display:none}textarea{height:220px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;line-height:1.45}#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;max-width:92%;text-align:center}#toast.show{opacity:1}@media(max-width:520px){.btn{width:100%}.grid{grid-template-columns:1fr 1fr 1fr}.q{font-size:18px}.choice{font-size:16px}}
+</style>
+</head>
+<body>
+<header><h1>消防設備士 勉強アプリ</h1><p>iPad / Safari / タッチ操作 安定版</p></header>
+<main>
+<section class="card">
+  <div class="row">
+    <button class="btn red" data-action="random">今日の10問</button>
+    <button class="btn sub" data-action="weak">苦手だけ</button>
+    <button class="btn sub" data-action="reset">記録リセット</button>
+  </div>
+  <p class="small">分野を選んで開始</p>
+  <select id="categorySelect" aria-label="分野選択">
+    <option value="">選択してください</option>
+    <option value="法令">法令</option>
+    <option value="構造・機能">構造・機能</option>
+    <option value="電気基礎">電気基礎</option>
+    <option value="鑑別">鑑別</option>
+  </select>
+  <p id="status" class="small">読み込み中...</p>
+</section>
+<section class="card grid">
+  <div class="stat"><b id="total">0</b><br><span class="small">回答数</span></div>
+  <div class="stat"><b id="correct">0</b><br><span class="small">正解数</span></div>
+  <div class="stat"><b id="rate">0%</b><br><span class="small">正答率</span></div>
+</section>
+<section class="card">
+  <div class="topline"><span id="mode" class="small">お試し表示</span><span id="count" class="small">1 / 1</span></div>
+  <p><span class="pill" id="field">消防設備士</span></p>
+  <div id="question" class="q">読み込み中...</div>
+  <div id="choices"></div>
+  <div id="explain" class="ex"></div>
+  <div class="row" style="margin-top:12px">
+    <button class="btn" data-action="next">次の問題</button>
+    <button class="btn sub" data-action="toggleWeak">苦手に追加/解除</button>
+  </div>
+</section>
+<section class="card">
+  <div class="topline"><h2 style="font-size:17px;margin:0">問題データ編集</h2><button class="btn sub" data-action="toggleEditor">開く/閉じる</button></div>
+  <div id="editor" class="hidden">
+    <p class="small">JSONを書き換えて「問題を反映」で追加できる。iPadでは長文編集が重い場合があるので、問題追加はPCの方が楽。</p>
+    <textarea id="dataBox" spellcheck="false"></textarea><br><br>
+    <div class="row"><button class="btn sub" data-action="applyData">問題を反映</button><button class="btn sub" data-action="restoreData">初期問題に戻す</button></div>
+  </div>
+</section>
+</main>
+<div id="toast"></div>
+<script>
+(function(){
+'use strict';
+var initialQuestions=[
+{id:'001',license:'乙4',cat:'法令',q:'消防用設備等の設置・維持に関する基本的な根拠法令はどれか。',choices:['消防法','道路交通法','労働基準法','電気通信事業法'],answer:0,ex:'消防用設備等の設置・維持管理は消防法を中心に規定される。'},
+{id:'002',license:'乙4',cat:'構造・機能',q:'自動火災報知設備で、火災の発生を感知する機器はどれか。',choices:['受信機','感知器','発信機','地区音響装置'],answer:1,ex:'感知器は熱・煙・炎などを検出して火災信号を送る。'},
+{id:'003',license:'乙4',cat:'構造・機能',q:'地区音響装置の主な役割はどれか。',choices:['火災を感知する','ベル等で警報を鳴らす','電源を遮断する','消火水を送る'],answer:1,ex:'地区音響装置はベル・ブザー等により建物内に火災を知らせる。'},
+{id:'004',license:'乙4',cat:'電気基礎',q:'オームの法則として正しいものはどれか。',choices:['V=IR','I=VR','R=VI','P=IR'],answer:0,ex:'電圧V、電流I、抵抗Rの関係は V=IR。'},
+{id:'005',license:'乙4',cat:'鑑別',q:'火災信号を手動で発するための機器はどれか。',choices:['差動式スポット型感知器','発信機','終端抵抗','非常コンセント'],answer:1,ex:'発信機は押しボタン等により手動で火災信号を発する。'},
+{id:'006',license:'乙4',cat:'法令',q:'消防設備士が工事整備対象設備等の工事・整備を行う際、原則として携帯すべきものはどれか。',choices:['危険物取扱者免状','消防設備士免状','建築士免許','運転免許証'],answer:1,ex:'消防設備士として業務を行う際は、消防設備士免状の携帯が必要とされる。'},
+{id:'007',license:'乙4',cat:'構造・機能',q:'受信機の主な役割はどれか。',choices:['感知器等からの信号を受け警報・表示を行う','消火薬剤を放出する','避難はしごを展開する','配管内の圧力を測定する'],answer:0,ex:'受信機は感知器・発信機からの信号を受け、地区表示や警報制御を行う中心装置。'},
+{id:'008',license:'乙4',cat:'電気基礎',q:'電力Pを表す式として正しいものはどれか。',choices:['P=VI','P=V/I','P=R/I','P=I/V'],answer:0,ex:'電力Pは電圧V×電流Iで求める。'},
+{id:'009',license:'乙4',cat:'鑑別',q:'受信機の火災表示で確認すべき代表的な情報はどれか。',choices:['天気予報','地区・回線の表示','車両番号','水道料金'],answer:1,ex:'どの地区・警戒区域から信号が来ているかを確認することが重要。'},
+{id:'010',license:'乙4',cat:'法令',q:'消防用設備等の点検結果の報告先として一般的に正しいものはどれか。',choices:['消防長または消防署長','警察署長','税務署長','労働基準監督署長'],answer:0,ex:'消防用設備等点検結果報告書は消防長または消防署長へ報告する。'}
+];
+var questions=[],quiz=[],idx=0,answered=false,stats={total:0,correct:0,weak:[]};
+function el(id){return document.getElementById(id)}
+function safeGet(key,fallback){try{var v=localStorage.getItem(key);return v?JSON.parse(v):fallback}catch(e){return fallback}}
+function safeSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));return true}catch(e){return false}}
+function toast(msg){var t=el('toast');t.textContent=msg;t.className='show';setTimeout(function(){t.className=''},1700)}
+function updateStats(){el('total').textContent=stats.total;el('correct').textContent=stats.correct;el('rate').textContent=stats.total?Math.round(stats.correct/stats.total*100)+'%':'0%'}
+function save(){safeSet('fireQ_ipad',questions);safeSet('fireS_ipad',stats);updateStats();var box=el('dataBox');if(box&&!document.activeElement.isSameNode(box)){box.value=JSON.stringify(questions,null,2)}}
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=b[i];b[i]=b[j];b[j]=tmp}return b}
+function setQuiz(list,mode){quiz=list.slice();idx=0;el('mode').textContent=mode;el('status').textContent=mode+'：'+quiz.length+'問';showQ();window.scrollTo({top:0,behavior:'smooth'})}
+function showQ(){answered=false;el('choices').innerHTML='';el('explain').style.display='none';if(!quiz.length){el('question').textContent='対象問題がないよ。問題を追加するか、別の分野を選んでね。';el('count').textContent='0 / 0';el('field').textContent='消防設備士';return}var q=quiz[idx];el('field').textContent=(q.license||'消防設備士')+'｜'+q.cat+(stats.weak.indexOf(q.id)>=0?'｜苦手登録中':'');el('question').textContent=q.q;el('count').textContent=(idx+1)+' / '+quiz.length;el('explain').textContent='解説：'+q.ex;for(var i=0;i<q.choices.length;i++){var b=document.createElement('button');b.type='button';b.className='choice';b.textContent=String.fromCharCode(65+i)+'. '+q.choices[i];b.dataset.choice=String(i);el('choices').appendChild(b)}}
+function answerQ(n){if(answered||!quiz.length)return;answered=true;var q=quiz[idx];stats.total++;if(n===q.answer)stats.correct++;var bs=document.querySelectorAll('.choice');bs.forEach(function(b,i){if(i===q.answer)b.classList.add('ok');if(i===n&&n!==q.answer)b.classList.add('ng')});el('explain').style.display='block';save()}
+function nextQ(){if(!quiz.length)return;idx=(idx+1)%quiz.length;showQ()}
+function toggleWeak(){if(!quiz.length)return;var id=quiz[idx].id;var p=stats.weak.indexOf(id);if(p>=0){stats.weak.splice(p,1);toast('苦手から外したよ')}else{stats.weak.push(id);toast('苦手に追加したよ')}save();showQ()}
+function resetAll(){stats={total:0,correct:0,weak:[]};save();showQ();toast('記録をリセットしたよ')}
+function applyData(){try{var d=JSON.parse(el('dataBox').value);if(!Array.isArray(d)||!d.length)throw new Error('empty');questions=d;save();setQuiz([questions[0]],'お試し表示');toast('問題を反映したよ')}catch(e){toast('JSON形式が崩れてるかも')}}
+function restoreData(){questions=initialQuestions.slice();save();setQuiz([questions[0]],'お試し表示');toast('初期問題に戻したよ')}
+function handleAction(action){if(action==='random')setQuiz(shuffle(questions).slice(0,10),'今日の10問');if(action==='weak')setQuiz(questions.filter(function(q){return stats.weak.indexOf(q.id)>=0}),'苦手だけ');if(action==='reset')resetAll();if(action==='next')nextQ();if(action==='toggleWeak')toggleWeak();if(action==='applyData')applyData();if(action==='restoreData')restoreData();if(action==='toggleEditor'){el('editor').classList.toggle('hidden');save()}}
+function boot(){questions=safeGet('fireQ_ipad',initialQuestions.slice());stats=safeGet('fireS_ipad',stats);if(!Array.isArray(questions)||!questions.length)questions=initialQuestions.slice();if(!stats||typeof stats.total!=='number')stats={total:0,correct:0,weak:[]};el('dataBox').value=JSON.stringify(questions,null,2);updateStats();setQuiz([questions[0]],'お試し表示');el('status').textContent='読み込み完了。最初の問題を表示してあるよ。'}
+document.addEventListener('click',function(e){var actionBtn=e.target.closest('[data-action]');if(actionBtn){e.preventDefault();handleAction(actionBtn.dataset.action);return}var choice=e.target.closest('.choice');if(choice){e.preventDefault();answerQ(Number(choice.dataset.choice));}});
+document.addEventListener('touchend',function(e){var target=e.target.closest('[data-action],.choice');if(target){target.click();e.preventDefault()}},{passive:false});
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='categorySelect'&&e.target.value){setQuiz(questions.filter(function(q){return q.cat===e.target.value}),e.target.value)}});
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot)}else{boot()}
+})();
+</script>
+</body>
+</html>
